@@ -1,18 +1,20 @@
 import sys
 import random
+import os
 def rogueweapondamage():
-    random.randint(1, 4)
+    return random.randint(1, 4) + dexmod
 def warriorweapondamage():
-    random.randint(1, 8)
+    return random.randint(1, 8) + strmod
+def enemyweapondamage():
+    return random.randint(1, 4) + edexmod
 enemystrength = 8
 estrmod = -1
 enemydexterity = 8
 edexmod = -1
 enemyconstitution = 8
 econmod = -1
-enemyhealth = 10 + econmod
+enemyhealth = 10 + random.randint(1, 6) + econmod
 eac = 10 + edexmod
-eweapondamage = random.randint(1, 4) + edexmod
 enemymove = 1
 while True:
     while True:
@@ -44,7 +46,6 @@ while True:
         conmod = 2
         playerhealth = 10 + random.randint(1, 10) + conmod
         ac = 12 + dexmod
-        weapondamage = warriorweapondamage() + strmod
     elif playerclass == 'rogue':
         strength = 13
         strmod = 1
@@ -54,7 +55,6 @@ while True:
         conmod = 1
         playerhealth = 8 + random.randint(1, 8) + conmod
         ac = 11 + dexmod
-        weapondamage = rogueweapondamage() + dexmod
     print('FIGHT BEGINS!!!')
     print('You found a scary looking training dummy.......just attack it.')
     while True:
@@ -69,7 +69,11 @@ while True:
                     break  # Break out of the player input loop.
             print('Type one of a, d, r or s.')
 
-        if playerMove == 'a':       # player attack
+        if playerMove == 'a':
+            if playerclass == 'warrior':
+                weapondamage = warriorweapondamage()
+            elif playerclass == 'rogue':
+                weapondamage = rogueweapondamage()
             print('You attack...')
             if random.randint(1, 20) < eac:
                 print('...you missed')
@@ -98,27 +102,30 @@ while True:
             enemymove = 'a'
 
         if enemymove == 'a':
+            eweapondamage = enemyweapondamage()
             print('enemy attacks...')
             if random.randint(1, 20) < ac:
                 print('...they missed')
             elif random.randint(1, 20) > ac:
-                print('...you got hit for ' + str(eweapondamage) + ' damage.....how did you manage that?')
+                print('...you got hit for ' + str(eweapondamage) + ' damage')
                 playerhealth -= eweapondamage
             elif random.randint(1, 20) == ac:
                 print('...they hit...but it does nothing')
-
         elif enemymove == 'd':
             print('enemy defends...somehow...')
             eac += 2
             print('...their defence increased')
-
         if playerMove == 'd':
             ac -= 2
+        if input() == '':
+            os.system("cls")
+        elif input() != '':
+            os.system("cls")
         if enemyhealth <= 0:
             print('Congrats! You won! enter (q) to quit.')
+            playerchoice = input()
             if playerchoice == 'q':
                 sys.exit()
-
         if playerhealth <= 0:
             print('......How did you even manage this.......you were not meant to be able to lose this fight.....?')
             print('...enter any key to leave and hang your head in shame.')
